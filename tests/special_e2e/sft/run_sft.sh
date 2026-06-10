@@ -53,6 +53,6 @@ torchrun --standalone --nnodes=1 --nproc_per_node=${NUM_GPUS} ${ENTRYPOINT} \
     checkpoint.save_contents=[model,optimizer,extra,hf_model] \
     trainer.max_ckpt_to_keep=1 \
     trainer.resume_mode=${RESUME_MODE} \
-    trainer.logger=['console', 'wandb'] $@
+    "trainer.logger=['console', 'wandb']" $@
 
 rm -rf "${ckpts_home:?}/*"
