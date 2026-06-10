@@ -50,6 +50,7 @@ torchrun --standalone --nnodes=1 --nproc_per_node=${NUM_GPUS} ${ENTRYPOINT} \
     trainer.experiment_name="${exp_name}" \
     trainer.total_training_steps=100 \
     trainer.save_freq=25 \
+    trainer.log_freq=1 \
     checkpoint.save_contents=[model,optimizer,extra,hf_model] \
     trainer.max_ckpt_to_keep=1 \
     trainer.resume_mode=${RESUME_MODE} \
