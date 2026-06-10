@@ -6,11 +6,11 @@ ENTRYPOINT=${ENTRYPOINT:-"-m verl.trainer.sft_trainer"}
 NUM_GPUS=${NUM_GPUS:-8}
 
 MODEL_ID=${MODEL_ID:-Qwen/Qwen2.5-0.5B-Instruct}
-MODEL_PATH=${MODEL_PATH:-${HOME}/models/${MODEL_ID}}
-#hf download "${MODEL_ID}" --local-dir "${MODEL_PATH}"
+MODEL_PATH=${MODEL_PATH:-/weka/nora-default/aakankshan/interactive_tables/models/${MODEL_ID}}
+hf download "${MODEL_ID}" --local-dir "${MODEL_PATH}"
 
-TRAIN_FILES=${TRAIN_FILES:-$HOME/data/gsm8k_sft/train.parquet}
-VAL_FILES=${VAL_FILES:-$HOME/data/gsm8k_sft/test.parquet}
+TRAIN_FILES=${TRAIN_FILES:-/weka/nora-default/aakankshan/interactive_tables/data/gsm8k_sft_messages/train.parquet}
+VAL_FILES=${VAL_FILES:-/weka/nora-default/aakankshan/interactive_tables/data/gsm8k_sft_messages/test.parquet}
 
 SP_SIZE=${SP_SIZE:-1}
 LIGER=${LIGER:-False}
@@ -23,11 +23,11 @@ RESUME_MODE=${RESUME_MODE:-disable}
 SAVE_FREQ=${SAVE_FREQ:-1}
 
 micro_bsz=2
-NUM_GPUS=8
+NUM_GPUS=1
 
 project_name="verl-test"
 exp_name="$(basename "${MODEL_ID,,}")-sft-minimal"
-ckpts_home=${ckpts_home:-$HOME/${project_name}/${exp_name}}
+ckpts_home=${ckpts_home:-/weka/nora-default/aakankshan/interactive_tables/models/checkpoints}
 
 mkdir -p "${ckpts_home}"
 
@@ -48,8 +48,8 @@ torchrun --standalone --nnodes=1 --nproc_per_node=${NUM_GPUS} ${ENTRYPOINT} \
     trainer.default_local_dir="${ckpts_home}" \
     trainer.project_name="${project_name}" \
     trainer.experiment_name="${exp_name}" \
-    trainer.total_training_steps=${TOTAL_TRAIN_STEP} \
-    trainer.save_freq=${SAVE_FREQ} \
+    trainer.total_training_steps=100 \
+    trainer.save_freq=25 \
     checkpoint.save_contents=[model,optimizer,extra,hf_model] \
     trainer.max_ckpt_to_keep=1 \
     trainer.resume_mode=${RESUME_MODE} \
